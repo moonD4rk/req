@@ -1,14 +1,5 @@
-# GRequests
-A Go "clone" of the great and famous Requests library
-
-[![Build Status](https://travis-ci.org/levigross/grequests.svg?branch=master)](https://travis-ci.org/levigross/grequests) [![GoDoc](https://godoc.org/github.com/levigross/grequests?status.svg)](https://godoc.org/github.com/levigross/grequests)
-[![Coverage Status](https://coveralls.io/repos/levigross/grequests/badge.svg)](https://coveralls.io/r/levigross/grequests)
-[![Join the chat at https://gitter.im/levigross/grequests](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/levigross/grequests?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-License
-======
-
-GRequests is licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for the full license text
+# Req
+A "clone" of the [grequests](https://github.com/levigross/grequests)
 
 Features
 ========
@@ -20,18 +11,18 @@ Features
 
 Install
 =======
-`go get -u github.com/levigross/grequests`
+`go get -u github.com/moonD4rk/req`
 
 Usage
 ======
-`import "github.com/levigross/grequests"`
+`import "github.com/moonD4rk/req"`
 
 Basic Examples
 =========
 Basic GET request:
 
 ```go
-resp, err := grequests.Get("http://httpbin.org/get", nil)
+resp, err := req.Get("http://httpbin.org/get", nil)
 // You can modify the request by passing an optional RqOptions struct
 
 if err != nil {
