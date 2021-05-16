@@ -11,11 +11,11 @@ Features
 
 Install
 =======
-`go get -u github.com/moonD4rk/req`
+`go get -u github.com/moond4rk/req`
 
 Usage
 ======
-`import "github.com/moonD4rk/req"`
+`import "github.com/moond4rk/req"`
 
 Basic Examples
 =========
