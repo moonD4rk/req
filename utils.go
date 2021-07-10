@@ -24,6 +24,29 @@ const (
 	requestTimeout = 90 * time.Second
 )
 
+const (
+	// MethodGet HTTP method
+	MethodGet = "GET"
+
+	// MethodPost HTTP method
+	MethodPost = "POST"
+
+	// MethodPut HTTP method
+	MethodPut = "PUT"
+
+	// MethodDelete HTTP method
+	MethodDelete = "DELETE"
+
+	// MethodPatch HTTP method
+	MethodPatch = "PATCH"
+
+	// MethodHead HTTP method
+	MethodHead = "HEAD"
+
+	// MethodOptions HTTP method
+	MethodOptions = "OPTIONS"
+)
+
 var (
 	// ErrRedirectLimitExceeded is the error returned when the request responded
 	// with too many redirects

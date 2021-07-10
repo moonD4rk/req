@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/moonD4rk/req"
+	"github.com/moond4rk/req"
 )
 
 func Example_basicGet() {
