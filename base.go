@@ -6,7 +6,7 @@ package req
 // 	2. A RqOptions struct
 // If you do not intend to use the `RqOptions` you can just pass nil
 func Get(url string, ro *RqOptions) (*Response, error) {
-	return DoRegularRequest("GET", url, ro)
+	return DoRegularRequest(MethodGet, url, ro)
 }
 
 // Put takes 2 parameters and returns a Response struct. These two options are:
@@ -14,7 +14,7 @@ func Get(url string, ro *RqOptions) (*Response, error) {
 // 	2. A RqOptions struct
 // If you do not intend to use the `RqOptions` you can just pass nil
 func Put(url string, ro *RqOptions) (*Response, error) {
-	return DoRegularRequest("PUT", url, ro)
+	return DoRegularRequest(MethodPut, url, ro)
 }
 
 // Patch takes 2 parameters and returns a Response struct. These two options are:
@@ -22,7 +22,7 @@ func Put(url string, ro *RqOptions) (*Response, error) {
 // 	2. A RqOptions struct
 // If you do not intend to use the `RqOptions` you can just pass nil
 func Patch(url string, ro *RqOptions) (*Response, error) {
-	return DoRegularRequest("PATCH", url, ro)
+	return DoRegularRequest(MethodPatch, url, ro)
 }
 
 // Delete takes 2 parameters and returns a Response struct. These two options are:
@@ -30,7 +30,7 @@ func Patch(url string, ro *RqOptions) (*Response, error) {
 // 	2. A RqOptions struct
 // If you do not intend to use the `RqOptions` you can just pass nil
 func Delete(url string, ro *RqOptions) (*Response, error) {
-	return DoRegularRequest("DELETE", url, ro)
+	return DoRegularRequest(MethodDelete, url, ro)
 }
 
 // Post takes 2 parameters and returns a Response channel. These two options are:
@@ -38,7 +38,7 @@ func Delete(url string, ro *RqOptions) (*Response, error) {
 // 	2. A RqOptions struct
 // If you do not intend to use the `RqOptions` you can just pass nil
 func Post(url string, ro *RqOptions) (*Response, error) {
-	return DoRegularRequest("POST", url, ro)
+	return DoRegularRequest(MethodPost, url, ro)
 }
 
 // Head takes 2 parameters and returns a Response channel. These two options are:
@@ -46,7 +46,7 @@ func Post(url string, ro *RqOptions) (*Response, error) {
 // 	2. A RqOptions struct
 // If you do not intend to use the `RqOptions` you can just pass nil
 func Head(url string, ro *RqOptions) (*Response, error) {
-	return DoRegularRequest("HEAD", url, ro)
+	return DoRegularRequest(MethodHead, url, ro)
 }
 
 // Options takes 2 parameters and returns a Response struct. These two options are:
@@ -54,7 +54,7 @@ func Head(url string, ro *RqOptions) (*Response, error) {
 // 	2. A RqOptions struct
 // If you do not intend to use the `RqOptions` you can just pass nil
 func Options(url string, ro *RqOptions) (*Response, error) {
-	return DoRegularRequest("OPTIONS", url, ro)
+	return DoRegularRequest(MethodOptions, url, ro)
 }
 
 // Req takes 3 parameters and returns a Response Struct. These three options are:
