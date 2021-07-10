@@ -1,4 +1,4 @@
-// Package grequests implements a friendly API over Go's existing net/http library
+// Package req implements a friendly API over Go's existing net/http library
 package req
 
 // Get takes 2 parameters and returns a Response Struct. These two options are:
