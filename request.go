@@ -16,6 +16,7 @@ import (
 	"net/http/cookiejar"
 	"net/textproto"
 	"net/url"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -28,12 +29,18 @@ import (
 // RqOptions is the location that of where the data
 type RqOptions struct {
 
-	// Data is a map of key values that will eventually convert into the
+	// Data is a map of key values that will eventually convert into
 	// the body of a POST request.
 	Data map[string]string
 
+	// RawData is string that will be directly written to the body
+	RawData string
+
 	// Params is a map of query strings that may be used within a GET request
 	Params map[string]string
+
+	// RawParams is a string that will be directly written to the query string
+	RawParams string
 
 	// QueryStruct is a struct that encapsulates a set of URL query params
 	// this paramter is mutually exclusive with `Params map[string]string` (they cannot be combined)
@@ -86,6 +93,9 @@ type RqOptions struct {
 	// process and store HTTP cookies when they are sent down
 	UseCookieJar bool
 
+	// ProxyURL is a string that allows you to specify a proxy URL
+	// supported protocols are http, https, socks5
+	ProxyURL string
 	// Proxies is a map in the following format
 	// *protocol* => proxy address e.g http => http://127.0.0.1:8080
 	Proxies map[string]*url.URL
@@ -501,19 +511,20 @@ func BuildHTTPClient(ro RqOptions) *http.Client {
 }
 
 func createHTTPTransport(ro RqOptions) *http.Transport {
-	ourHTTPTransport := &http.Transport{
-		// These are borrowed from the default transporter
-		Proxy: ro.proxySettings,
-		Dial: (&net.Dialer{
-			Timeout:   ro.DialTimeout,
-			KeepAlive: ro.DialKeepAlive,
-			LocalAddr: ro.LocalAddr,
-		}).Dial,
-		TLSHandshakeTimeout: ro.TLSHandshakeTimeout,
+	dialer := &net.Dialer{
+		Timeout:   ro.DialTimeout,
+		KeepAlive: ro.DialKeepAlive,
+		LocalAddr: ro.LocalAddr,
+	}
 
-		// Here comes the user settings
-		TLSClientConfig:    &tls.Config{InsecureSkipVerify: ro.InsecureSkipVerify},
-		DisableCompression: ro.DisableCompression,
+	ourHTTPTransport := &http.Transport{
+		Proxy:               ro.proxySettings,
+		DialContext:         dialer.DialContext,
+		TLSHandshakeTimeout: ro.TLSHandshakeTimeout,
+		TLSClientConfig:     &tls.Config{InsecureSkipVerify: ro.InsecureSkipVerify},
+		DisableCompression:  ro.DisableCompression,
+		MaxIdleConnsPerHost: runtime.GOMAXPROCS(0) + 1,
+		ForceAttemptHTTP2:   true,
 	}
 	EnsureTransporterFinalized(ourHTTPTransport)
 	return ourHTTPTransport
