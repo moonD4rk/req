@@ -24,7 +24,6 @@ func TestOptionsSession(t *testing.T) {
 	session := NewSession(nil)
 
 	resp, err := session.Options("http://httpbin.org/cookies/set", &RqOptions{Params: map[string]string{"one": "two"}})
-
 	if err != nil {
 		t.Fatal("Cannot set cookie: ", err)
 	}
@@ -76,7 +75,6 @@ func TestOptionsSession(t *testing.T) {
 			t.Error("We should not have any other cookies: ", cookie)
 		}
 	}
-
 }
 
 func TestOptionsInvalidURLSession(t *testing.T) {

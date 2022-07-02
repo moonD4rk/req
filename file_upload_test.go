@@ -15,7 +15,6 @@ func TestErrorOpenFile(t *testing.T) {
 
 func TestGLOBFiles(t *testing.T) {
 	fd, err := FileUploadFromGlob("testdata/*")
-
 	if err != nil {
 		t.Error("Got an invalid GLOB: ", err)
 	}
@@ -39,7 +38,6 @@ func TestNoGlobFiles(t *testing.T) {
 
 func TestGlobWithDir(t *testing.T) {
 	fd, err := FileUploadFromGlob("*test*")
-
 	if err != nil {
 		t.Error("Glob failed", err)
 	}
@@ -49,5 +47,4 @@ func TestGlobWithDir(t *testing.T) {
 			t.Error(f, "is a dir (which cannot be uploaded)")
 		}
 	}
-
 }

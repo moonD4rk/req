@@ -301,11 +301,13 @@ func TestGetProxy(t *testing.T) {
 
 func TestGetSyncInvalidProxyScheme(t *testing.T) {
 	resp, err := Get("http://httpbin.org/get", &RqOptions{ProxyURL: "gopher://httpbin.org"})
-	if err != nil {
-		t.Error("Request failed: ", err)
+	if err == ErrInvalidProxyURL {
+		t.Log("Got expected error: ", err)
+		return
 	}
-
-	verifyOkResponse(resp, t)
+	if err == nil {
+		verifyOkResponse(resp, t)
+	}
 }
 
 func TestGetSyncNoOptions(t *testing.T) {
@@ -339,7 +341,6 @@ func TestGetWithCookies(t *testing.T) {
 				},
 			},
 		})
-
 	if err != nil {
 		t.Error("Unable to make request", err)
 	}
@@ -361,7 +362,6 @@ func TestGetWithCookies(t *testing.T) {
 	if myJSONStruct.Cookies.AnotherCookie != "Some Value" {
 		t.Errorf("Cookie value not set properly: %#v", myJSONStruct)
 	}
-
 }
 
 func TestGetWithCookiesCustomCookieJar(t *testing.T) {
@@ -383,7 +383,6 @@ func TestGetWithCookiesCustomCookieJar(t *testing.T) {
 				},
 			},
 		})
-
 	if err != nil {
 		t.Error("Unable to make request", err)
 	}
@@ -405,14 +404,12 @@ func TestGetWithCookiesCustomCookieJar(t *testing.T) {
 	if myJSONStruct.Cookies.AnotherCookie != "Some Value" {
 		t.Errorf("Cookie value not set properly: %#v", myJSONStruct)
 	}
-
 }
 
 func TestGetSession(t *testing.T) {
 	session := NewSession(nil)
 
 	resp, err := session.Get("http://httpbin.org/cookies/set", &RqOptions{Params: map[string]string{"one": "two"}})
-
 	if err != nil {
 		t.Fatal("Cannot set cookie: ", err)
 	}
@@ -470,7 +467,6 @@ func TestGetSession(t *testing.T) {
 	}
 
 	session.CloseIdleConnections()
-
 }
 
 // func TestGetNoOptionsDeflate(t *testing.T) {
@@ -509,7 +505,6 @@ func TestGetInvalidURLSession(t *testing.T) {
 
 func TestGetXMLSerialize(t *testing.T) {
 	resp, err := Get("http://httpbin.org/xml", nil)
-
 	if err != nil {
 		t.Error("Unable to make request", err)
 	}
@@ -531,7 +526,6 @@ func TestGetXMLSerialize(t *testing.T) {
 	if err := resp.XML(123, nil); err == nil {
 		t.Error("Still able to consume XML from used response")
 	}
-
 }
 
 func TestGetCustomUserAgent(t *testing.T) {
@@ -547,7 +541,6 @@ func TestGetBasicAuth(t *testing.T) {
 	ro := &RqOptions{Auth: []string{"Levi", "Bot"}}
 	resp, err := Get("http://httpbin.org/get", ro)
 	// Not the usual JSON so copy and paste from below
-
 	if err != nil {
 		t.Error("Unable to make request", err)
 	}
@@ -566,15 +559,15 @@ func TestGetBasicAuth(t *testing.T) {
 	if myJSONStruct.Headers.Authorization != "Basic TGV2aTpCb3Q=" {
 		t.Error("Unable to set HTTP basic auth", myJSONStruct.Headers)
 	}
-
 }
 
 func TestGetCustomHeader(t *testing.T) {
-	ro := &RqOptions{UserAgent: "LeviBot 0.1",
-		Headers: map[string]string{"X-Wonderful-Header": "1"}}
+	ro := &RqOptions{
+		UserAgent: "LeviBot 0.1",
+		Headers:   map[string]string{"X-Wonderful-Header": "1"},
+	}
 	resp, err := Get("http://httpbin.org/get", ro)
 	// Not the usual JSON so copy and paste from below
-
 	if err != nil {
 		t.Error("Unable to make request", err)
 	}
@@ -610,7 +603,6 @@ func TestGetInvalidSSLCertNoVerify(t *testing.T) {
 			t.Error("Request did not return OK")
 		}
 	}
-
 }
 
 func TestGetInvalidSSLCertNoVerifyNoOptions(t *testing.T) {
@@ -641,7 +633,6 @@ func TestGetInvalidSSLCertNoCompression(t *testing.T) {
 	if resp.Ok == true {
 		t.Error("Request did return OK")
 	}
-
 }
 
 func TestGetInvalidSSLCertWithCompression(t *testing.T) {
@@ -655,7 +646,6 @@ func TestGetInvalidSSLCertWithCompression(t *testing.T) {
 	if resp.Ok == true {
 		t.Error("Request did return OK")
 	}
-
 }
 
 func TestErrorResponseNOOP(t *testing.T) {
@@ -711,13 +701,11 @@ func TestErrorResponseNOOP(t *testing.T) {
 	if written, err := resp.Read(buf[:]); written != -1 && err == nil {
 		t.Error("Somehow we were able to read from our error response")
 	}
-
 }
 
 func TestGetInvalidSSLCertNoCompressionNoVerify(t *testing.T) {
 	ro := &RqOptions{UserAgent: "LeviBot 0.1", InsecureSkipVerify: true, DisableCompression: true}
 	resp, err := Get("https://self-signed.badssl.com/", ro)
-
 	if err != nil {
 		t.Error("SSL verification worked when it shouldn't of", err)
 	}
@@ -725,13 +713,11 @@ func TestGetInvalidSSLCertNoCompressionNoVerify(t *testing.T) {
 	if resp.Ok != true {
 		t.Error("Request did return OK")
 	}
-
 }
 
 func TestGetInvalidSSLCertWithCompressionNoVerify(t *testing.T) {
 	ro := &RqOptions{UserAgent: "LeviBot 0.1", InsecureSkipVerify: true, DisableCompression: false}
 	resp, err := Get("https://self-signed.badssl.com/", ro)
-
 	if err != nil {
 		t.Error("SSL verification worked when it shouldn't of", err)
 	}
@@ -739,7 +725,6 @@ func TestGetInvalidSSLCertWithCompressionNoVerify(t *testing.T) {
 	if resp.Ok != true {
 		t.Error("Request did return OK")
 	}
-
 }
 
 func TestGetInvalidSSLCert(t *testing.T) {
@@ -753,7 +738,6 @@ func TestGetInvalidSSLCert(t *testing.T) {
 	if resp.Ok == true {
 		t.Error("Request did return OK")
 	}
-
 }
 
 func TestGetBasicArgs(t *testing.T) {
@@ -763,7 +747,6 @@ func TestGetBasicArgs(t *testing.T) {
 	resp, _ := Get("http://httpbin.org/get?Goodbye=World", ro)
 
 	verifyOkArgsResponse(resp, t)
-
 }
 
 func TestGetBasicArgsQueryStruct(t *testing.T) {
@@ -777,7 +760,6 @@ func TestGetBasicArgsQueryStruct(t *testing.T) {
 	resp, _ := Get("http://httpbin.org/get?Goodbye=World", ro)
 
 	verifyOkArgsResponse(resp, t)
-
 }
 
 func TestGetBasicArgsQueryStructErr(t *testing.T) {
@@ -793,7 +775,6 @@ func TestGetBasicArgsQueryStructErr(t *testing.T) {
 	if resp.Ok == true {
 		t.Error("Request did return OK")
 	}
-
 }
 
 func TestGetBasicArgsQueryStructUrlQueryErr(t *testing.T) {
@@ -809,7 +790,6 @@ func TestGetBasicArgsQueryStructUrlQueryErr(t *testing.T) {
 	if resp.Ok == true {
 		t.Error("Request did return OK")
 	}
-
 }
 
 func TestGetBasicArgsQueryStructUrlErr(t *testing.T) {
@@ -825,7 +805,6 @@ func TestGetBasicArgsQueryStructUrlErr(t *testing.T) {
 	if resp.Ok == true {
 		t.Error("Request did return OK")
 	}
-
 }
 
 func TestGetBasicArgsErr(t *testing.T) {
@@ -841,7 +820,6 @@ func TestGetBasicArgsErr(t *testing.T) {
 	if resp.Ok == true {
 		t.Error("Request did return OK")
 	}
-
 }
 
 func TestGetBasicArgsParams(t *testing.T) {
@@ -911,12 +889,10 @@ func TestGetFileDownload(t *testing.T) {
 	if resp.StatusCode != 200 {
 		t.Error("Response returned a non-200 code")
 	}
-
 }
 
 func TestJsonConsumedResponse(t *testing.T) {
 	resp, err := Get("http://httpbin.org/get", nil)
-
 	if err != nil {
 		t.Error("Unable to make request", err)
 	}
@@ -938,7 +914,6 @@ func TestJsonConsumedResponse(t *testing.T) {
 
 func TestDownloadConsumedResponse(t *testing.T) {
 	resp, err := Get("http://httpbin.org/get", nil)
-
 	if err != nil {
 		t.Error("Unable to make request", err)
 	}
@@ -962,7 +937,6 @@ func TestDownloadConsumedResponse(t *testing.T) {
 
 func TestGetBytes(t *testing.T) {
 	resp, err := Get("http://httpbin.org/get", nil)
-
 	if err != nil {
 		t.Error("Unable to make request", err)
 	}
@@ -982,7 +956,6 @@ func TestGetBytes(t *testing.T) {
 
 func TestGetBytesNoBuffer(t *testing.T) {
 	resp, err := Get("http://httpbin.org/get", nil)
-
 	if err != nil {
 		t.Error("Unable to make request", err)
 	}
@@ -1014,7 +987,6 @@ func TestGetBytesNoBuffer(t *testing.T) {
 
 func TestGetString(t *testing.T) {
 	resp, err := Get("http://httpbin.org/get", nil)
-
 	if err != nil {
 		t.Error("Unable to make request", err)
 	}
@@ -1042,7 +1014,6 @@ func TestGetString(t *testing.T) {
 	if resp.String() != "" {
 		t.Error("Internal Buffer not cleaned up")
 	}
-
 }
 
 func TestGetRedirectHeaderCopy(t *testing.T) {
@@ -1054,7 +1025,6 @@ func TestGetRedirectHeaderCopy(t *testing.T) {
 		}
 	})
 	resp, err := Get(srv.URL+"/foo", &RqOptions{Headers: map[string]string{"X-Custom": "1"}})
-
 	if err != nil {
 		t.Error("Redirect request failed", err)
 	}
@@ -1064,7 +1034,6 @@ func TestGetRedirectHeaderCopy(t *testing.T) {
 	}
 
 	srv.Close()
-
 }
 
 func TestGetRedirectSecretHeaderNoCopy(t *testing.T) {
@@ -1078,7 +1047,6 @@ func TestGetRedirectSecretHeaderNoCopy(t *testing.T) {
 	resp, err := Get(srv.URL+"/sec", &RqOptions{
 		Headers: map[string]string{"X-Custom": "1"}, SensitiveHTTPHeaders: map[string]struct{}{"X-Custom": {}},
 	})
-
 	if err != nil {
 		t.Error("Redirect request failed", err)
 	}
@@ -1088,14 +1056,13 @@ func TestGetRedirectSecretHeaderNoCopy(t *testing.T) {
 	}
 
 	srv.Close()
-
 }
 
 func TestMassiveJSONFile(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Skipping massive JSON file download because short was called")
 	}
-	resp, err := Get("https://raw.githubusercontent.com/moond4rk/sf-city-lots-json/master/citylots.json", nil)
+	resp, err := Get("https://raw.githubusercontent.com/levigross/sf-city-lots-json/master/citylots.json", nil)
 	if err != nil {
 		t.Error("Request to massive JSON blob failed", err)
 	}
@@ -1169,7 +1136,6 @@ func TestAuthStripOnRedirect(t *testing.T) {
 		Auth:    []string{"one ", "two"},
 		Headers: map[string]string{"WWW-Authenticate": "foo", "Proxy-Authorization": "bar"},
 	})
-
 	if err != nil {
 		t.Error("Request had creds inside", err)
 	}
@@ -1202,7 +1168,6 @@ func TestNoRedirect(t *testing.T) {
 	}
 
 	srv.Close()
-
 }
 
 func verifyOkArgsResponse(resp *Response, t *testing.T) *BasicGetResponseArgs {

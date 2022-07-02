@@ -79,7 +79,6 @@ func addRedirectFunctionality(client *http.Client, ro *RqOptions) {
 		return
 	}
 	client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
-
 		if ro.RedirectLimit < 0 {
 			return http.ErrUseLastResponse
 		}

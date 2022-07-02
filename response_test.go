@@ -15,7 +15,6 @@ func TestResponseOk(t *testing.T) {
 func verifyResponseOkForStatus(status int, t *testing.T) {
 	url := "http://httpbin.org/status/" + strconv.Itoa(status)
 	resp, err := Get(url, nil)
-
 	if err != nil {
 		t.Error("Unable to make request", err)
 	}

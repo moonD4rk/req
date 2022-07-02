@@ -27,19 +27,12 @@ import (
 
 // RqOptions is the location that of where the data
 type RqOptions struct {
-
 	// Data is a map of key values that will eventually convert into
 	// the body of a POST request.
 	Data map[string]string
 
-	// RawData is string that will be directly written to the body
-	RawData string
-
 	// Params is a map of query strings that may be used within a GET request
 	Params map[string]string
-
-	// RawParams is a string that will be directly written to the query string
-	RawParams string
 
 	// QueryStruct is a struct that encapsulates a set of URL query params
 	// this paramter is mutually exclusive with `Params map[string]string` (they cannot be combined)
@@ -190,7 +183,6 @@ func buildRequest(httpMethod, url string, ro *RqOptions, httpClient *http.Client
 
 	// Build the request
 	req, err := buildHTTPRequest(httpMethod, url, ro)
-
 	if err != nil {
 		return nil, err
 	}
@@ -251,7 +243,6 @@ func createFileUploadRequest(httpMethod, userURL string, ro *RqOptions) (*http.R
 	// when uploading using PUT or PATCH
 
 	req, err := http.NewRequest(httpMethod, userURL, ro.Files[0].FileContents)
-
 	if err != nil {
 		return nil, err
 	}
@@ -259,7 +250,6 @@ func createFileUploadRequest(httpMethod, userURL string, ro *RqOptions) (*http.R
 	req.Header.Set("Content-Type", mime.TypeByExtension(ro.Files[0].FileName))
 
 	return req, nil
-
 }
 
 func createBasicXMLRequest(httpMethod, userURL string, ro *RqOptions) (*http.Request, error) {
@@ -286,8 +276,8 @@ func createBasicXMLRequest(httpMethod, userURL string, ro *RqOptions) (*http.Req
 	req.Header.Set("Content-Type", "application/xml")
 
 	return req, nil
-
 }
+
 func createMultiPartPostRequest(httpMethod, userURL string, ro *RqOptions) (*http.Request, error) {
 	requestBody := &bytes.Buffer{}
 
@@ -348,7 +338,6 @@ func createMultiPartPostRequest(httpMethod, userURL string, ro *RqOptions) (*htt
 	}
 
 	req, err := http.NewRequest(httpMethod, userURL, requestBody)
-
 	if err != nil {
 		return nil, err
 	}
@@ -359,7 +348,6 @@ func createMultiPartPostRequest(httpMethod, userURL string, ro *RqOptions) (*htt
 }
 
 func createBasicJSONRequest(httpMethod, userURL string, ro *RqOptions) (*http.Request, error) {
-
 	var reader io.Reader
 	switch ro.JSON.(type) {
 	case string:
@@ -382,12 +370,10 @@ func createBasicJSONRequest(httpMethod, userURL string, ro *RqOptions) (*http.Re
 	req.Header.Set("Content-Type", "application/json")
 
 	return req, nil
-
 }
+
 func createBasicRequest(httpMethod, userURL string, ro *RqOptions) (*http.Request, error) {
-
 	req, err := http.NewRequest(httpMethod, userURL, strings.NewReader(encodePostValues(ro.Data)))
-
 	if err != nil {
 		return nil, err
 	}
@@ -456,7 +442,6 @@ func (ro RqOptions) dontUseDefaultClient() bool {
 // BuildHTTPClient is a function that will return a custom HTTP client based on the request options provided
 // the check is in UseDefaultClient
 func BuildHTTPClient(ro RqOptions) *http.Client {
-
 	if ro.HTTPClient != nil {
 		return ro.HTTPClient
 	}
@@ -532,13 +517,11 @@ func createHTTPTransport(ro RqOptions) *http.Transport {
 // That is what the "magic" is on the last line
 func buildURLParams(userURL string, params map[string]string) (string, error) {
 	parsedURL, err := url.Parse(userURL)
-
 	if err != nil {
 		return "", err
 	}
 
 	parsedQuery, err := url.ParseQuery(parsedURL.RawQuery)
-
 	if err != nil {
 		return "", nil
 	}
@@ -590,13 +573,11 @@ func addQueryParams(parsedURL *url.URL, parsedQuery url.Values) string {
 
 func buildURLStruct(userURL string, URLStruct interface{}) (string, error) {
 	parsedURL, err := url.Parse(userURL)
-
 	if err != nil {
 		return "", err
 	}
 
 	parsedQuery, err := url.ParseQuery(parsedURL.RawQuery)
-
 	if err != nil {
 		return "", err
 	}

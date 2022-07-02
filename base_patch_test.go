@@ -7,7 +7,6 @@ import (
 
 func TestBasicPatchRequest(t *testing.T) {
 	resp, err := Patch("http://httpbin.org/patch", nil)
-
 	if err != nil {
 		t.Error("Unable to make request", resp.Error)
 	}
@@ -21,7 +20,6 @@ func TestPatchSession(t *testing.T) {
 	session := NewSession(nil)
 
 	resp, err := session.Get("http://httpbin.org/cookies/set", &RqOptions{Params: map[string]string{"one": "two"}})
-
 	if err != nil {
 		t.Fatal("Cannot set cookie: ", err)
 	}
@@ -87,7 +85,6 @@ func TestPatchSession(t *testing.T) {
 			t.Error("We should not have any other cookies: ", cookie)
 		}
 	}
-
 }
 
 func TestPatchInvalidURLSession(t *testing.T) {

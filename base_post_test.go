@@ -115,30 +115,28 @@ func TestBasicPostRequest(t *testing.T) {
 	resp, _ := Post("http://httpbin.org/post",
 		&RqOptions{Data: map[string]string{"One": "Two"}})
 	verifyOkPostResponse(resp, t)
-
 }
 
 func TestBasicRegularPostRequest(t *testing.T) {
 	resp, err := Post("http://httpbin.org/post",
 		&RqOptions{Data: map[string]string{"One": "Two"}})
-
 	if err != nil {
 		t.Error("Cannot post: ", err)
 	}
 
 	verifyOkPostResponse(resp, t)
-
 }
 
 func TestBasicPostRequestInvalidURL(t *testing.T) {
 	resp, _ := Post("%../dir/",
-		&RqOptions{Data: map[string]string{"One": "Two"},
-			Params: map[string]string{"1": "2"}})
+		&RqOptions{
+			Data:   map[string]string{"One": "Two"},
+			Params: map[string]string{"1": "2"},
+		})
 
 	if resp.Error == nil {
 		t.Error("Somehow the request went through")
 	}
-
 }
 
 func TestBasicPostRequestInvalidURLNoParams(t *testing.T) {
@@ -147,7 +145,6 @@ func TestBasicPostRequestInvalidURLNoParams(t *testing.T) {
 	if resp.Error == nil {
 		t.Error("Somehow the request went through")
 	}
-
 }
 
 func TestSessionPostRequestInvalidURLNoParams(t *testing.T) {
@@ -156,7 +153,6 @@ func TestSessionPostRequestInvalidURLNoParams(t *testing.T) {
 	if _, err := session.Post("%../dir/", &RqOptions{Data: map[string]string{"One": "Two"}}); err == nil {
 		t.Error("Somehow the request went through")
 	}
-
 }
 
 func TestXMLPostRequestInvalidURL(t *testing.T) {
@@ -256,9 +252,7 @@ func TestSessionPostJsonRequestInvalidXML(t *testing.T) {
 }
 
 func TestBasicPostRequestUploadInvalidURL(t *testing.T) {
-
 	fd, err := FileUploadFromDisk("testdata/mypassword")
-
 	if err != nil {
 		t.Error("Unable to open file: ", err)
 	}
@@ -280,7 +274,6 @@ func TestSessionPostRequestUploadInvalidURL(t *testing.T) {
 	session := NewSession(nil)
 
 	fd, err := FileUploadFromDisk("testdata/mypassword")
-
 	if err != nil {
 		t.Error("Unable to open file: ", err)
 	}
@@ -299,7 +292,6 @@ func TestSessionPostRequestUploadInvalidURL(t *testing.T) {
 }
 
 func TestBasicPostRequestUploadInvalidFileUpload(t *testing.T) {
-
 	resp, _ := Post("%../dir/",
 		&RqOptions{
 			Files: []FileUpload{{FileName: `\x00%'"üfdsufhid\Ä\"D\\\"JS%25//'"H•\\\\'"¶•ªç∂\uf8\x8AKÔÓÔ`, FileContents: nil}},
@@ -349,7 +341,6 @@ func TestXMLPostRequest(t *testing.T) {
 	if myXMLStruct.Age != 1 {
 		t.Errorf("Unable to serialize XML response from within JSON %#v ", myXMLStruct)
 	}
-
 }
 
 func TestXMLPostRequestReaderBody(t *testing.T) {
@@ -383,7 +374,6 @@ func TestXMLPostRequestReaderBody(t *testing.T) {
 	if myXMLStruct.Age != 1 {
 		t.Errorf("Unable to serialize XML response from within JSON %#v ", myXMLStruct)
 	}
-
 }
 
 func TestXMLMarshaledStringPostRequest(t *testing.T) {
@@ -477,16 +467,13 @@ func TestBasicPostRequestUploadErrorEOFReader(t *testing.T) {
 			Files: []FileUpload{{FileName: "Random.test", FileContents: rd}},
 			Data:  map[string]string{"One": "Two"},
 		})
-
 	if err != nil {
 		t.Error("Somehow our test didn't fail... ", err)
 	}
 }
 
 func TestBasicPostRequestUpload(t *testing.T) {
-
 	fd, err := FileUploadFromDisk("testdata/mypassword")
-
 	if err != nil {
 		t.Error("Unable to open file: ", err)
 	}
@@ -541,9 +528,7 @@ func TestBasicPostRequestUpload(t *testing.T) {
 }
 
 func TestBasicPostRequestUploadWithMime(t *testing.T) {
-
 	fd, err := os.Open("testdata/mypassword")
-
 	if err != nil {
 		t.Error("Unable to open file: ", err)
 	}
@@ -603,9 +588,7 @@ func TestBasicPostRequestUploadWithMime(t *testing.T) {
 }
 
 func TestBasicPostRequestUploadMultipleFiles(t *testing.T) {
-
 	fd, err := FileUploadFromGlob("testdata/*")
-
 	if err != nil {
 		t.Error("Unable to glob file: ", err)
 	}
@@ -660,7 +643,6 @@ func TestBasicPostRequestUploadMultipleFiles(t *testing.T) {
 	if myJSONStruct.Form.One != "Two" {
 		t.Error("Unable to parse form properly", myJSONStruct.Form)
 	}
-
 }
 
 func TestBasicPostJsonBytesRequest(t *testing.T) {
@@ -712,7 +694,6 @@ func TestBasicPostJsonBytesRequest(t *testing.T) {
 	if myJSONStruct.Headers.XRequestedWith != "XMLHttpRequest" {
 		t.Error("Invalid requested header: ", myJSONStruct.Headers.XRequestedWith)
 	}
-
 }
 
 func TestBasicPostJsonStringRequest(t *testing.T) {
@@ -764,7 +745,6 @@ func TestBasicPostJsonStringRequest(t *testing.T) {
 	if myJSONStruct.Headers.XRequestedWith != "XMLHttpRequest" {
 		t.Error("Invalid requested header: ", myJSONStruct.Headers.XRequestedWith)
 	}
-
 }
 
 func TestBasicPostJsonRequest(t *testing.T) {
@@ -816,14 +796,12 @@ func TestBasicPostJsonRequest(t *testing.T) {
 	if myJSONStruct.Headers.XRequestedWith != "XMLHttpRequest" {
 		t.Error("Invalid requested header: ", myJSONStruct.Headers.XRequestedWith)
 	}
-
 }
 
 func TestPostSession(t *testing.T) {
 	session := NewSession(nil)
 
 	resp, err := session.Get("http://httpbin.org/cookies/set", &RqOptions{Params: map[string]string{"one": "two"}})
-
 	if err != nil {
 		t.Fatal("Cannot set cookie: ", err)
 	}
@@ -889,7 +867,6 @@ func TestPostSession(t *testing.T) {
 			t.Error("We should not have any other cookies: ", cookie)
 		}
 	}
-
 }
 
 // verifyResponse will verify the following conditions

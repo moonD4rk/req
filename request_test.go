@@ -4,7 +4,6 @@ import "testing"
 
 func TestAddQueryStringParams(t *testing.T) {
 	userURL, err := buildURLParams("https://www.google.com/", map[string]string{"1": "2", "3": "4"})
-
 	if err != nil {
 		t.Error("URL Parse Error: ", err)
 	}
@@ -16,7 +15,6 @@ func TestAddQueryStringParams(t *testing.T) {
 
 func TestSortAddQueryStringParams(t *testing.T) {
 	userURL, err := buildURLParams("https://www.google.com/", map[string]string{"3": "4", "1": "2"})
-
 	if err != nil {
 		t.Error("URL Parse Error: ", err)
 	}
@@ -28,7 +26,6 @@ func TestSortAddQueryStringParams(t *testing.T) {
 
 func TestAddQueryStringParamsExistingParam(t *testing.T) {
 	userURL, err := buildURLParams("https://www.google.com/?5=6", map[string]string{"3": "4", "1": "2"})
-
 	if err != nil {
 		t.Error("URL Parse Error: ", err)
 	}

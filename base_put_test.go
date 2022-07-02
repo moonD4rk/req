@@ -7,7 +7,6 @@ import (
 
 func TestBasicPutRequest(t *testing.T) {
 	resp, err := Put("http://httpbin.org/put", nil)
-
 	if err != nil {
 		t.Error("Unable to make request", resp.Error)
 	}
@@ -15,12 +14,10 @@ func TestBasicPutRequest(t *testing.T) {
 	if resp.Ok != true {
 		t.Error("Request did not return OK")
 	}
-
 }
 
 func TestBasicPutUploadRequest(t *testing.T) {
 	fd, err := FileUploadFromDisk("testdata/mypassword")
-
 	if err != nil {
 		t.Error("Unable to open file: ", err)
 	}
@@ -38,12 +35,10 @@ func TestBasicPutUploadRequest(t *testing.T) {
 	if resp.Ok != true {
 		t.Error("Request did not return OK")
 	}
-
 }
 
 func TestBasicPutUploadRequestInvalidURL(t *testing.T) {
 	fd, err := FileUploadFromDisk("testdata/mypassword")
-
 	if err != nil {
 		t.Error("Unable to open file: ", err)
 	}
@@ -61,7 +56,6 @@ func TestBasicPutUploadRequestInvalidURL(t *testing.T) {
 
 func TestSessionPutUploadRequestInvalidURL(t *testing.T) {
 	fd, err := FileUploadFromDisk("testdata/mypassword")
-
 	if err != nil {
 		t.Error("Unable to open file: ", err)
 	}
@@ -83,7 +77,6 @@ func TestPutSession(t *testing.T) {
 	session := NewSession(nil)
 
 	resp, err := session.Get("http://httpbin.org/cookies/set", &RqOptions{Params: map[string]string{"one": "two"}})
-
 	if err != nil {
 		t.Fatal("Cannot set cookie: ", err)
 	}
@@ -149,7 +142,6 @@ func TestPutSession(t *testing.T) {
 			t.Error("We should not have any other cookies: ", cookie)
 		}
 	}
-
 }
 
 func TestPutInvalidURLSession(t *testing.T) {

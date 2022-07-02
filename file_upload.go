@@ -27,20 +27,17 @@ type FileUpload struct {
 // FileUploadFromDisk allows you to create a FileUpload struct slice by just specifying a location on the disk
 func FileUploadFromDisk(fileName string) ([]FileUpload, error) {
 	fd, err := os.Open(fileName)
-
 	if err != nil {
 		return nil, err
 	}
 
 	return []FileUpload{{FileContents: fd, FileName: fileName}}, nil
-
 }
 
 // FileUploadFromGlob allows you to create a FileUpload struct slice by just specifying a glob location on the disk
 // this function will gloss over all errors in the files and only upload the files that don't return errors from the glob
 func FileUploadFromGlob(fileSystemGlob string) ([]FileUpload, error) {
 	files, err := filepath.Glob(fileSystemGlob)
-
 	if err != nil {
 		return nil, err
 	}
@@ -64,5 +61,4 @@ func FileUploadFromGlob(fileSystemGlob string) ([]FileUpload, error) {
 	}
 
 	return filesToUpload, nil
-
 }
