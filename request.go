@@ -22,7 +22,6 @@ import (
 	"time"
 
 	"github.com/google/go-querystring/query"
-
 	"github.com/weppos/publicsuffix-go/publicsuffix"
 )
 
@@ -96,9 +95,6 @@ type RqOptions struct {
 	// ProxyURL is a string that allows you to specify a proxy URL
 	// supported protocols are http, https, socks5
 	ProxyURL string
-	// Proxies is a map in the following format
-	// *protocol* => proxy address e.g http => http://127.0.0.1:8080
-	Proxies map[string]*url.URL
 
 	// TLSHandshakeTimeout specifies the maximum amount of time waiting to
 	// wait for a TLS handshake. Zero means no timeout.
@@ -416,18 +412,15 @@ func encodePostValues(postValues map[string]string) string {
 // if settings are provided – they will override the environment variables
 func (ro RqOptions) proxySettings(req *http.Request) (*url.URL, error) {
 	// No proxies – lets use the default
-	if len(ro.Proxies) == 0 {
+	if ro.ProxyURL == "" {
 		return http.ProxyFromEnvironment(req)
 	}
-
-	// There was a proxy specified – do we support the protocol?
-	if _, ok := ro.Proxies[req.URL.Scheme]; ok {
-		return ro.Proxies[req.URL.Scheme], nil
+	u, err := validateProxyURL(ro.ProxyURL)
+	if err != nil {
+		return nil, err
 	}
-
-	// Proxies were specified but not for any protocol that we use
-	return http.ProxyFromEnvironment(req)
-
+	u.Scheme = req.URL.Scheme
+	return u, nil
 }
 
 // dontUseDefaultClient will tell the "client creator" if a custom client is needed
@@ -446,7 +439,7 @@ func (ro RqOptions) dontUseDefaultClient() bool {
 	switch {
 	case ro.InsecureSkipVerify == true:
 	case ro.DisableCompression == true:
-	case len(ro.Proxies) != 0:
+	case len(ro.ProxyURL) != 0:
 	case ro.TLSHandshakeTimeout != 0:
 	case ro.DialTimeout != 0:
 	case ro.DialKeepAlive != 0:
@@ -517,8 +510,7 @@ func createHTTPTransport(ro RqOptions) *http.Transport {
 		LocalAddr: ro.LocalAddr,
 	}
 
-	ourHTTPTransport := &http.Transport{
-		Proxy:               ro.proxySettings,
+	transport := &http.Transport{
 		DialContext:         dialer.DialContext,
 		TLSHandshakeTimeout: ro.TLSHandshakeTimeout,
 		TLSClientConfig:     &tls.Config{InsecureSkipVerify: ro.InsecureSkipVerify},
@@ -526,8 +518,13 @@ func createHTTPTransport(ro RqOptions) *http.Transport {
 		MaxIdleConnsPerHost: runtime.GOMAXPROCS(0) + 1,
 		ForceAttemptHTTP2:   true,
 	}
-	EnsureTransporterFinalized(ourHTTPTransport)
-	return ourHTTPTransport
+	if strings.HasPrefix(ro.ProxyURL, "socks5") {
+		transport.DialContext = socks5DialerContext(ro.ProxyURL)
+	} else {
+		transport.Proxy = ro.proxySettings
+	}
+	EnsureTransporterFinalized(transport)
+	return transport
 }
 
 // buildURLParams returns a URL with all of the params
