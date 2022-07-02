@@ -296,7 +296,7 @@ func createMultiPartPostRequest(httpMethod, userURL string, ro *RqOptions) (*htt
 	for i, f := range ro.Files {
 
 		if f.FileContents == nil {
-			return nil, errors.New("grequests: Pointer FileContents cannot be nil")
+			return nil, errors.New("req: Pointer FileContents cannot be nil")
 		}
 
 		fieldName := f.FieldName
@@ -411,7 +411,7 @@ func encodePostValues(postValues map[string]string) string {
 // proxySettings will default to the default proxy settings if none are provided
 // if settings are provided – they will override the environment variables
 func (ro RqOptions) proxySettings(req *http.Request) (*url.URL, error) {
-	// No proxies – lets use the default
+	// No ProxyURL – lets use the default
 	if ro.ProxyURL == "" {
 		return http.ProxyFromEnvironment(req)
 	}

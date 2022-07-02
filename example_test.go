@@ -46,8 +46,8 @@ func Example_proxy() {
 		log.Panicln(err)
 	}
 
-	resp, err := req.Get("http://www.levigross.com/",
-		&req.RqOptions{Proxies: map[string]*url.URL{proxyURL.Scheme: proxyURL}})
+	resp, err := req.Get("http://www.moond4rk.com/",
+		&req.RqOptions{ProxyURL: proxyURL.String()})
 
 	if err != nil {
 		log.Println(err)

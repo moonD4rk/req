@@ -280,7 +280,7 @@ func TestGetProxy(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	resp, err := Head(ts.URL, &RqOptions{Proxies: map[string]*url.URL{pu.Scheme: pu}})
+	resp, err := Head(ts.URL, &RqOptions{ProxyURL: pu.String()})
 
 	defer http.DefaultTransport.(*http.Transport).CloseIdleConnections()
 
@@ -300,7 +300,7 @@ func TestGetProxy(t *testing.T) {
 }
 
 func TestGetSyncInvalidProxyScheme(t *testing.T) {
-	resp, err := Get("http://httpbin.org/get", &RqOptions{Proxies: map[string]*url.URL{"gopher": nil}})
+	resp, err := Get("http://httpbin.org/get", &RqOptions{ProxyURL: "gopher://httpbin.org"})
 	if err != nil {
 		t.Error("Request failed: ", err)
 	}
@@ -473,9 +473,9 @@ func TestGetSession(t *testing.T) {
 
 }
 
-//func TestGetNoOptionsDeflate(t *testing.T) {
+// func TestGetNoOptionsDeflate(t *testing.T) {
 //	verifyOkResponse(<-GetAsync("http://httpbin.org/deflate", nil), t)
-//}
+// }
 
 func xmlASCIIDecoder(charset string, input io.Reader) (io.Reader, error) {
 	return input, nil
@@ -528,7 +528,7 @@ func TestGetXMLSerialize(t *testing.T) {
 		t.Errorf("Invalid XML serialization %#v", userXML)
 	}
 
-	if err := resp.XML(int(123), nil); err == nil {
+	if err := resp.XML(123, nil); err == nil {
 		t.Error("Still able to consume XML from used response")
 	}
 
@@ -1095,7 +1095,7 @@ func TestMassiveJSONFile(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Skipping massive JSON file download because short was called")
 	}
-	resp, err := Get("https://raw.githubusercontent.com/levigross/sf-city-lots-json/master/citylots.json", nil)
+	resp, err := Get("https://raw.githubusercontent.com/moond4rk/sf-city-lots-json/master/citylots.json", nil)
 	if err != nil {
 		t.Error("Request to massive JSON blob failed", err)
 	}
@@ -1112,7 +1112,7 @@ func TestMassiveJSONFile(t *testing.T) {
 }
 
 func TestGitHubSelfJSON(t *testing.T) {
-	resp, err := Get("https://api.github.com/repos/levigross/grequests", nil)
+	resp, err := Get("https://api.github.com/repos/moond4rk/grequests", nil)
 	if err != nil {
 		t.Error("Request to reddit JSON blob failed", err)
 	}

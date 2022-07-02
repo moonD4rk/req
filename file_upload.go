@@ -46,7 +46,7 @@ func FileUploadFromGlob(fileSystemGlob string) ([]FileUpload, error) {
 	}
 
 	if len(files) == 0 {
-		return nil, errors.New("grequests: No files have been returned in the glob")
+		return nil, errors.New("req: No files have been returned in the glob")
 	}
 
 	filesToUpload := make([]FileUpload, 0, len(files))
